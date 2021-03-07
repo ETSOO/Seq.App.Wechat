@@ -26,4 +26,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Seq.Apps" Version="5.1.0" />
+  </ItemGroup>
+
 </Project>
