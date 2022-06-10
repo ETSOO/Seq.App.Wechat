@@ -1,5 +1,4 @@
 ﻿using com.etsoo.WeiXinService;
-using Microsoft.Extensions.DependencyInjection;
 using Seq.Apps;
 using Seq.Apps.LogEvents;
 using System.Net.Http.Json;
@@ -15,7 +14,6 @@ namespace Seq.App.Wechat
     public class WechatApp : SeqApp, ISubscribeToAsync<LogEventData>
     {
         const string Service = "Seq";
-        static readonly IHttpClientFactory? httpClientFactory;
 
         private DateTime lastRunAt;
 
@@ -23,13 +21,6 @@ namespace Seq.App.Wechat
         {
             get { lock (this) return lastRunAt; }
             set { lock (this) lastRunAt = value; }
-        }
-
-        static WechatApp()
-        {
-            var serviceCollection = new ServiceCollection().AddHttpClient();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
         }
 
         [SeqAppSetting(
@@ -60,7 +51,7 @@ namespace Seq.App.Wechat
         private async Task SendAsync(Event<LogEventData> evt)
         {
             // 验证数据
-            if (httpClientFactory is null || string.IsNullOrEmpty(Tokens)) return;
+            if (string.IsNullOrEmpty(Tokens)) return;
 
             // 发送的数据
             var data = new LogAlertDto
@@ -76,7 +67,7 @@ namespace Seq.App.Wechat
             // 哈希
             var (json, signature) = await ServiceUtils.SerializeAsync(data);
 
-            using var client = httpClientFactory.CreateClient();
+            using var client = new HttpClient();
             var response = await client.PostAsJsonAsync("https://wechatapi.etsoo.com/api/Service/LogAlert/" + HttpUtility.UrlEncode(signature), new StreamContent(json));
             if (!response.IsSuccessStatusCode)
             {
