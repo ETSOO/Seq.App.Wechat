@@ -73,7 +73,8 @@ namespace Seq.App.Wechat
             var response = await client.PostAsJsonAsync("https://wechatapi.etsoo.com/api/Service/LogAlert/" + HttpUtility.UrlEncode(signature), new StreamContent(json));
             if (!response.IsSuccessStatusCode)
             {
-                // 如果失败如何记录日志？
+                // 记录日志
+                Log.Warning("Log Alert - {ReasonPhrase} ({StatusCode})", response.StatusCode, response.ReasonPhrase);
             }
         }
     }
