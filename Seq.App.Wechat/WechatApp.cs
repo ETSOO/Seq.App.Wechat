@@ -11,7 +11,7 @@ namespace Seq.App.Wechat
     /// Wechat app
     /// 微信主程序
     /// </summary>
-    [SeqApp("Wechat App", Description = "Publish messages to Wechat official account. Go https://github.com/ETSOO/Seq.App.Wechat for setup help. / 发送信息到关注的微信服务号。")]
+    [SeqApp("Wechat App", Description = "Publish messages to Wechat service account. Go https://github.com/ETSOO/Seq.App.Wechat for setup help.")]
     public class WechatApp : SeqApp, ISubscribeToAsync<LogEventData>
     {
         const string Service = "Seq";
@@ -34,9 +34,9 @@ namespace Seq.App.Wechat
 
         [SeqAppSetting(
             IsOptional = false,
-            DisplayName = "Token / 访问令牌",
+            DisplayName = "Token(s)",
             InputType = SettingInputType.Password,
-            HelpText = "关注微信服务号etsoo2004，点菜单“服务” => “访问令牌”获取，多个令牌之间用分号隔开")]
+            HelpText = "Follow the WeChat service account 'etsoo2004', click the menu to obtain it. Multiple tokens are separated by semicolons.")]
         public string? Tokens { get; set; }
 
         /// <summary>
