@@ -17,18 +17,38 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/ETSOO/Seq.App.Wechat</RepositoryUrl>
     <Description>ETSOO's Seq App for message publish to Wechat</Description>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
   </PropertyGroup>
+	
+  <!--
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary2\ClassLibrary2.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\ClassLibrary3\ClassLibrary3.csproj" Condition="'$(TargetFramework)' == 'net47'" PrivateAssets="all" />
+  </ItemGroup>
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')->WithMetadataValue('PrivateAssets', 'All'))" />
+    </ItemGroup>
+  </Target>
+  -->
 
   <ItemGroup>
     <None Include="..\logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+	<None Include="..\com.etsoo.WeiXinService.dll">
+		<Pack>True</Pack>
+		<PackagePath>lib\net6.0</PackagePath>
+	</None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="com.etsoo.WeiXinService" Version="1.0.2" />
+	<PackageReference Include="com.etsoo.WeiXinService" Version="1.0.2" />
     <PackageReference Include="Seq.Apps" Version="2021.4.0" />
   </ItemGroup>
 
