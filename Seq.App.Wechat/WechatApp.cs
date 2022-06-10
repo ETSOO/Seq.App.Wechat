@@ -1,94 +1,87 @@
-﻿using Seq.Apps;
+﻿using com.etsoo.WeiXinService;
+using Microsoft.Extensions.DependencyInjection;
+using Seq.Apps;
 using Seq.Apps.LogEvents;
-using System.Net;
-using System.Net.Mail;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
+using System.Net.Http.Json;
+using System.Web;
 
 namespace Seq.App.Wechat
 {
     /// <summary>
-    /// Main App
-    /// 主程序
+    /// Wechat app
+    /// 微信主程序
     /// </summary>
-    [SeqApp("Wechat App", Description = "Publish messages to Wechat official account")]
-    public class WechatApp : SeqApp, ISubscribeTo<LogEventData>
+    [SeqApp("Wechat App", Description = "Publish messages to Wechat official account. Go https://github.com/ETSOO/Seq.App.Wechat for setup help. / 发送信息到关注的微信服务号。")]
+    public class WechatApp : SeqApp, ISubscribeToAsync<LogEventData>
     {
-        // Event queue
-        // 事件队列
-        static readonly BufferBlock<Event<LogEventData>> queue = new ();
+        const string Service = "Seq";
+        static readonly IHttpClientFactory? httpClientFactory;
 
-        // Open id
-        // 微信服务号用户编号
-        static string? openId;
+        private DateTime lastRunAt;
 
-        /// <summary>
-        /// Sending count
-        /// 发送计数
-        /// </summary>
-        public static int Count = 0;
-
-        // Static constructor
-        // 静态构造函数
-        static WechatApp()
+        protected DateTime LastRunAt
         {
-            Task.Run(async () =>
-            {
-                while(true)
-                {
-                    // No open id
-                    if (string.IsNullOrEmpty(openId))
-                        continue;
-
-                    // Available item
-                    var item = await queue.ReceiveAsync();
-                    if (item != null)
-                    {
-                        // Send it
-                        await SendAsync(item);
-                    }
-                }
-            });
+            get { lock (this) return lastRunAt; }
+            set { lock (this) lastRunAt = value; }
         }
 
-        // Send
-        // 发送
-        static async Task SendAsync(Event<LogEventData> evt)
+        static WechatApp()
         {
-            // 发送邮件测试
-            using var client = new SmtpClient("smtp.gmail.com", 587);
-            client.EnableSsl = true;
-            client.Credentials = new NetworkCredential("alert.etsoo@gmail.com", "Etsoo@2004");
-
-            using var message = new MailMessage("alert.etsoo@gmail.com", "xz@etsoo.com", "测试邮件", evt.Data.RenderedMessage);
-            await client.SendMailAsync(message);
-
-            // Add to the count
-            Interlocked.Increment(ref Count);
+            var serviceCollection = new ServiceCollection().AddHttpClient();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
         }
 
         [SeqAppSetting(
             IsOptional = false,
-            DisplayName = "用户编号",
-            HelpText = "识别用户身份，可以多个 Seq 程序共用同一编号")]
-        public string? OpenId
-        {
-            get { return openId; }
-            set { openId = value; }
-        }
+            DisplayName = "Token / 访问令牌",
+            InputType = SettingInputType.Password,
+            HelpText = "关注微信服务号etsoo2004，点菜单“服务” => “访问令牌”获取，多个令牌之间用分号隔开")]
+        public string? Tokens { get; set; }
 
         /// <summary>
         /// Method is called each time a log event is processed by SEQ.
         /// 每次SEQ处理一个日志事件时，都会调用此方法。
         /// </summary>
         /// <param name="evt">Event</param>
-        public void On(Event<LogEventData> evt)
+        public async Task OnAsync(Event<LogEventData> evt)
         {
-            Task.Run(async () =>
+            // 忽略三分钟内的重复记录
+            var ts = DateTime.Now - LastRunAt;
+            if (ts.TotalMinutes < 3) return;
+
+            // 更新时间
+            LastRunAt = DateTime.Now;
+
+            // 发送
+            await SendAsync(evt);
+        }
+
+        private async Task SendAsync(Event<LogEventData> evt)
+        {
+            // 验证数据
+            if (httpClientFactory is null || string.IsNullOrEmpty(Tokens)) return;
+
+            // 发送的数据
+            var data = new LogAlertDto
             {
-                await queue.SendAsync(evt);
-            });
+                Tokens = Tokens.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(token => token.Trim()).ToArray(),
+                Service = Service,
+                Id = evt.Id,
+                Level = evt.Data.Level.ToString(),
+                Message = evt.Data.RenderedMessage[..512],
+                Datetime = evt.Data.LocalTimestamp.LocalDateTime
+            };
+
+            // 哈希
+            var (json, signature) = await ServiceUtils.SerializeAsync(data);
+
+            using var client = httpClientFactory.CreateClient();
+            var response = await client.PostAsJsonAsync("https://wechatapi.etsoo.com/api/Service/LogAlert/" + HttpUtility.UrlEncode(signature), new StreamContent(json));
+            if (!response.IsSuccessStatusCode)
+            {
+                // 如果失败如何记录日志？
+            }
         }
     }
 }
