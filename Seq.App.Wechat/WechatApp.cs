@@ -54,13 +54,15 @@ namespace Seq.App.Wechat
             if (string.IsNullOrEmpty(Tokens)) return;
 
             // 发送的数据
+            var message = evt.Data.RenderedMessage;
+            if (message.Length > 512) message = message[..512];
             var data = new LogAlertDto
             {
                 Tokens = Tokens.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(token => token.Trim()).ToArray(),
                 Service = Service,
                 Id = evt.Id,
                 Level = evt.Data.Level.ToString(),
-                Message = evt.Data.RenderedMessage[..512],
+                Message = message,
                 Datetime = evt.Data.LocalTimestamp.LocalDateTime
             };
 

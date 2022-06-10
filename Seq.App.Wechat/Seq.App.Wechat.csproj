@@ -17,10 +17,12 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/ETSOO/Seq.App.Wechat</RepositoryUrl>
     <Description>ETSOO's Seq App for message publish to Wechat</Description>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
   </PropertyGroup>
 	
   <!--
+  https://github.com/nuget/home/issues/3891#issuecomment-377319939
+  No PackageReference solution yet
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
