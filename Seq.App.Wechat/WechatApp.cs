@@ -67,15 +67,19 @@ namespace Seq.App.Wechat
 
             // 哈希
             var (json, signature) = await ServiceUtils.SerializeAsync(data);
+            var signUrl = HttpUtility.UrlEncode(signature);
+
+            using var content = new StreamContent(json);
+            content.Headers.Add("Content-Type", "application/json");
 
             using var client = new HttpClient();
-            var response = await client.PostAsync("https://wechatapi.etsoo.com/api/Service/LogAlert/" + HttpUtility.UrlEncode(signature), new StreamContent(json));
+            var response = await client.PostAsync("https://wechatapi.etsoo.com/api/Service/LogAlert/" + signUrl, content);
             if (!response.IsSuccessStatusCode)
             {
                 // 记录日志
                 var code = (int)response.StatusCode;
                 var status = response.StatusCode.ToString();
-                Log.Warning("Log Alert - {status} ({code})", status, code);
+                Log.Warning("Seq.App.Wechat failed with {signUrl} - {status} ({code})", signUrl, status, code);
             }
         }
     }
