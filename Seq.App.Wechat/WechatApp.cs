@@ -1,7 +1,6 @@
 ﻿using com.etsoo.WeiXinService;
 using Seq.Apps;
 using Seq.Apps.LogEvents;
-using System.Net.Http.Json;
 using System.Web;
 
 namespace Seq.App.Wechat
@@ -70,11 +69,13 @@ namespace Seq.App.Wechat
             var (json, signature) = await ServiceUtils.SerializeAsync(data);
 
             using var client = new HttpClient();
-            var response = await client.PostAsJsonAsync("https://wechatapi.etsoo.com/api/Service/LogAlert/" + HttpUtility.UrlEncode(signature), new StreamContent(json));
+            var response = await client.PostAsync("https://wechatapi.etsoo.com/api/Service/LogAlert/" + HttpUtility.UrlEncode(signature), new StreamContent(json));
             if (!response.IsSuccessStatusCode)
             {
                 // 记录日志
-                Log.Warning("Log Alert - {ReasonPhrase} ({StatusCode})", response.StatusCode, response.ReasonPhrase);
+                var code = (int)response.StatusCode;
+                var status = response.StatusCode.ToString();
+                Log.Warning("Log Alert - {status} ({code})", status, code);
             }
         }
     }
