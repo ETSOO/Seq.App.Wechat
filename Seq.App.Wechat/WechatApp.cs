@@ -69,9 +69,9 @@ namespace Seq.App.Wechat
             {
                 Tokens = tokenItems,
                 Service = Service,
-                Id = evt.Id,
+                Id = evt.Id[..Math.Min(evt.Id.Length, 20)],
                 Level = evt.Data.Level.ToString(),
-                Message = message,
+                Message = message[..Math.Min(message.Length, 512)],
                 Datetime = evt.Data.LocalTimestamp.UtcDateTime
             };
 
