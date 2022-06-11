@@ -49,14 +49,25 @@ namespace Seq.App.Wechat
         private async Task SendAsync(Event<LogEventData> evt)
         {
             // 验证数据
-            if (string.IsNullOrEmpty(Tokens)) return;
+            if (string.IsNullOrEmpty(Tokens))
+            {
+                return;
+            }
+
+            var tokenItems = Tokens.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(token => token.Trim()).ToArray();
+            var tokenCount = tokenItems.Length;
+            if (tokenCount == 0)
+            {
+                Log.Warning("Seq.App.Wechat failed - no token");
+                return;
+            }
 
             // 发送的数据
             var message = evt.Data.RenderedMessage;
             if (message.Length > 512) message = message[..512];
             var data = new LogAlertDto
             {
-                Tokens = Tokens.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(token => token.Trim()).ToArray(),
+                Tokens = tokenItems,
                 Service = Service,
                 Id = evt.Id,
                 Level = evt.Data.Level.ToString(),
@@ -72,7 +83,8 @@ namespace Seq.App.Wechat
                 // 记录日志
                 var code = (int)response.StatusCode;
                 var status = response.StatusCode.ToString();
-                Log.Warning("Seq.App.Wechat failed - {status} ({code})", status, code);
+                var content = await response.Content.ReadAsStringAsync();
+                Log.Warning("Seq.App.Wechat failed - {status} ({code}), {tokenCount}, {content}", status, code, tokenCount, content);
             }
         }
     }

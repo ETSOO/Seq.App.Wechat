@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 	<ImplicitUsings>enable</ImplicitUsings>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\etsoo.snk</AssemblyOriginatorKeyFile>
@@ -17,7 +17,7 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/ETSOO/Seq.App.Wechat</RepositoryUrl>
     <Description>ETSOO's Seq App for message publish to Wechat</Description>
-    <Version>1.0.12</Version>
+    <Version>1.0.14</Version>
   </PropertyGroup>
 	
   <!--
