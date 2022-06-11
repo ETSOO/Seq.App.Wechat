@@ -1,7 +1,6 @@
 ﻿using com.etsoo.WeiXinService;
 using Seq.Apps;
 using Seq.Apps.LogEvents;
-using System.Web;
 
 namespace Seq.App.Wechat
 {
@@ -62,24 +61,18 @@ namespace Seq.App.Wechat
                 Id = evt.Id,
                 Level = evt.Data.Level.ToString(),
                 Message = message,
-                Datetime = evt.Data.LocalTimestamp.LocalDateTime
+                Datetime = evt.Data.LocalTimestamp.UtcDateTime
             };
 
-            // 哈希
-            var (json, signature) = await ServiceUtils.SerializeAsync(data);
-            var signUrl = HttpUtility.UrlEncode(signature);
-
-            using var content = new StreamContent(json);
-            content.Headers.Add("Content-Type", "application/json");
-
+            // 发送
             using var client = new HttpClient();
-            var response = await client.PostAsync("https://wechatapi.etsoo.com/api/Service/LogAlert/" + signUrl, content);
+            var response = await ServiceUtils.SendLogAlertAsync(data, client);
             if (!response.IsSuccessStatusCode)
             {
                 // 记录日志
                 var code = (int)response.StatusCode;
                 var status = response.StatusCode.ToString();
-                Log.Warning("Seq.App.Wechat failed with {signUrl} - {status} ({code})", signUrl, status, code);
+                Log.Warning("Seq.App.Wechat failed - {status} ({code})", status, code);
             }
         }
     }
