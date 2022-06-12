@@ -70,7 +70,7 @@ namespace Seq.App.Wechat
                 Id = evt.Id,
                 Level = evt.Data.Level.ToString(),
                 Message = evt.Data.RenderedMessage,
-                Datetime = evt.Data.LocalTimestamp.UtcDateTime
+                Datetime = evt.Data.LocalTimestamp
             };
 
             // 发送

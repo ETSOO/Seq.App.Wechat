@@ -17,7 +17,7 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/ETSOO/Seq.App.Wechat</RepositoryUrl>
     <Description>ETSOO's Seq App for message publish to Wechat</Description>
-    <Version>1.0.17</Version>
+    <Version>1.0.18</Version>
   </PropertyGroup>
 	
   <!--
@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="com.etsoo.WeiXinService" Version="1.0.6" />
+	<PackageReference Include="com.etsoo.WeiXinService" Version="1.0.7" />
     <PackageReference Include="Seq.Apps" Version="2021.4.0" />
   </ItemGroup>
 
