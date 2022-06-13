@@ -63,10 +63,18 @@ namespace Seq.App.Wechat
                 return;
             }
 
+            var name = HostName;
+            if (string.IsNullOrEmpty(name))
+            {
+                name = Host.InstanceName;
+                if (string.IsNullOrEmpty(name))
+                    name = "default";
+            }
+
             // 发送的数据
             var data = new LogAlertDto
             {
-                Host = HostName ?? Host.InstanceName,
+                Host = name,
                 Tokens = tokenItems,
                 Service = Service,
                 Id = evt.Id,
