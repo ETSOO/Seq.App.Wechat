@@ -22,11 +22,18 @@ namespace Seq.App.Wechat
         }
 
         [SeqAppSetting(
+            IsOptional = true,
+            DisplayName = "Name",
+            InputType = SettingInputType.Text,
+            HelpText = "Identifying host name for the service. Instance name will be applied when blank.")]
+        public string? HostName { get; set; }
+
+        [SeqAppSetting(
             IsOptional = false,
             DisplayName = "Token(s)",
             InputType = SettingInputType.Password,
             HelpText = "Follow the WeChat service account 'etsoo2004', click the menu to obtain it. Multiple tokens are separated by semicolons.")]
-        public string? Tokens { get; set; }
+        public string Tokens { get; set; } = default!;
 
         /// <summary>
         /// Method is called each time a log event is processed by SEQ.
@@ -48,12 +55,6 @@ namespace Seq.App.Wechat
 
         private async Task SendAsync(Event<LogEventData> evt)
         {
-            // 验证数据
-            if (string.IsNullOrEmpty(Tokens))
-            {
-                return;
-            }
-
             var tokenItems = Tokens.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(token => token.Trim()).ToArray();
             var tokenCount = tokenItems.Length;
             if (tokenCount == 0)
@@ -65,6 +66,7 @@ namespace Seq.App.Wechat
             // 发送的数据
             var data = new LogAlertDto
             {
+                Host = HostName ?? Host.InstanceName,
                 Tokens = tokenItems,
                 Service = Service,
                 Id = evt.Id,
