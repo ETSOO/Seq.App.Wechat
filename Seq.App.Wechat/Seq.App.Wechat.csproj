@@ -3,21 +3,21 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-	<ImplicitUsings>enable</ImplicitUsings>
+	  <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\etsoo.snk</AssemblyOriginatorKeyFile>
     <Authors>ETSOO SmartERP NextGen Team</Authors>
-    <Company>ETSOO</Company>
-    <Copyright>Copyright © ETSOO 2022</Copyright>
+    <Company>ETSOO / 亿速思维</Company>
+    <Copyright>Copyright © ETSOO 2004 - 2022</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://www.etsoo.com/SmartERP/</PackageProjectUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/ETSOO/Seq.App.Wechat</RepositoryUrl>
     <Description>ETSOO's Seq App for message publish to Wechat</Description>
-    <Version>1.0.20</Version>
+    <Version>1.0.21</Version>
   </PropertyGroup>
 	
   <!--
@@ -43,14 +43,14 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-	<None Include="..\com.etsoo.WeiXinService.dll">
-		<Pack>True</Pack>
-		<PackagePath>lib\net6.0</PackagePath>
-	</None>
+	  <None Include="..\com.etsoo.WeiXinService.dll">
+		  <Pack>True</Pack>
+		  <PackagePath>lib\net6.0</PackagePath>
+	  </None>
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="com.etsoo.WeiXinService" Version="1.0.8" />
+	  <PackageReference Include="com.etsoo.WeiXinService" Version="1.0.9" />
     <PackageReference Include="Seq.Apps" Version="2021.4.0" />
   </ItemGroup>
 
