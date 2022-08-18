@@ -13,11 +13,12 @@
     <Copyright>Copyright © ETSOO 2004 - 2022</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://www.etsoo.com/SmartERP/</PackageProjectUrl>
-    <RepositoryType>GitHub</RepositoryType>
+    <RepositoryType></RepositoryType>
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/ETSOO/Seq.App.Wechat</RepositoryUrl>
-    <Description>ETSOO's Seq App for message publish to Wechat</Description>
-    <Version>1.0.21</Version>
+    <Description>Seq App for message publishing to Wechat
+Seq App 用于向微信发布消息</Description>
+    <Version>1.0.22</Version>
   </PropertyGroup>
 	
   <!--
@@ -50,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <PackageReference Include="com.etsoo.WeiXinService" Version="1.0.9" />
+	  <PackageReference Include="com.etsoo.WeiXinService" Version="1.0.10" />
     <PackageReference Include="Seq.Apps" Version="2021.4.0" />
   </ItemGroup>
 
